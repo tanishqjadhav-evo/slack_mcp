@@ -13,7 +13,13 @@ if os.getenv("K_SERVICE") is None:
     dotenv_path = os.path.join(current_dir, ".env")
     load_dotenv(dotenv_path)
 
-mcp = FastMCP("Slack MCP")
+# Cloud Run injects PORT and expects the app to listen on 0.0.0.0:$PORT.
+# For local stdio development, host/port are unused and safely ignored.
+mcp = FastMCP(
+    "Slack MCP",
+    host="0.0.0.0",
+    port=int(os.environ.get("PORT", 8080)),
+)
 
 
 def _bot_client() -> WebClient:
